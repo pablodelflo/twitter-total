@@ -1,0 +1,9 @@
+.vscode/
+__pycache__/
+*.pyc
+*.txt
+/COLECCIONES/
+*.mp4
+*.jpg
+config.py
+*.xlsx
