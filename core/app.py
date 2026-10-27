@@ -1,6 +1,6 @@
 from pathlib import Path
 from config import *
-#from utils.excel import ExcelUtils
+from utils.excel import ExcelUtils
 from core.driver_manager import get_driver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
@@ -17,7 +17,7 @@ class TwitterApp:
     def __init__(self):
         self.base_path = Path(BASE_PATH_COLECCIONES)
         self.driver = get_driver()
-        #self.excel = ExcelUtils(self)
+        self.excel = ExcelUtils(self)
 
     
     def cerrar(self):
@@ -34,3 +34,44 @@ class TwitterApp:
         print("\n================ TWITTER TOTAL ===================")
         print("\n* Una app en Python para gestionar tu red social *\n")
         print("==================================================")
+
+        spanFollowers = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Seguidores')]")
+            ))
+        # Subir al <a> contenedor y bajar al span del número
+        enlace = spanFollowers.find_element(By.XPATH, "./ancestor::a")
+        texto = enlace.find_element(By.XPATH, ".//span/span").text   # "1.199"
+        
+        print(texto)
+
+
+    def full_scroll(self, pausa=1):
+        ##Esta función fuerza el scroll vertical para asegurar la carga de todos los elementos (vídeos, colecciones, etc)
+        # Obtener altura inicial
+        last_height = self.driver.execute_script("return document.body.scrollHeight")
+
+        while True:
+            # Hacer scroll al final
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            sleep(SCROLL_PAUSE_TIME)
+
+            # Comparar altura después del scroll
+            new_height = self.driver.execute_script("return document.body.scrollHeight")
+            
+            if new_height == last_height:
+                print("📉 Fin del scroll detectado, forzando scrolls adicionales...")
+                
+                # Hacer scrolls adicionales forzados
+                for i in range(MAX_EXTRA_SCROLLS):
+                    self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                    sleep(SCROLL_PAUSE_TIME)
+                
+                # Una última comprobación
+                final_height = self.driver.execute_script("return document.body.scrollHeight")
+                if final_height == last_height:
+                    print("✅ Scroll final confirmado.")
+                    break
+                else:
+                    print("🔁 Scroll reactivado, continuando...")
+                    last_height = final_height
+            else:
+                last_height = new_height

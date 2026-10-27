@@ -1,7 +1,7 @@
 import sys
 from core.app import TwitterApp
 from config import *
-#from services.followers_service import FollowerService
+from services.followers_service import FollowerService
 #from services.following_service import FollowingService
 #from services.saved_service import SavedService
 
@@ -28,9 +28,7 @@ def main():
             print("\nDebes introducir una opción correcta. Vuelve a probar.")
             continue
         if opcion == 1:
-            #SavedService(app).bannerSaved()
-            #SavedService(app).menuSaved()
-            print("Opcion 1")
+            FollowerService(app).getFollowers()
 
         elif opcion == 2:
             #FollowingService(app).bannerFollowX()
