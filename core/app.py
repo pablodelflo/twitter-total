@@ -35,16 +35,8 @@ class TwitterApp:
         print("\n* Una app en Python para gestionar tu red social *\n")
         print("==================================================")
 
-        spanFollowers = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Seguidores')]")
-            ))
-        # Subir al <a> contenedor y bajar al span del número
-        enlace = spanFollowers.find_element(By.XPATH, "./ancestor::a")
-        texto = enlace.find_element(By.XPATH, ".//span/span").text   # "1.199"
-        
-        print(texto)
 
-
-    def full_scroll(self, pausa=1):
+    def full_scroll(self, pausa=2):
         ##Esta función fuerza el scroll vertical para asegurar la carga de todos los elementos (vídeos, colecciones, etc)
         # Obtener altura inicial
         last_height = self.driver.execute_script("return document.body.scrollHeight")
@@ -75,3 +67,16 @@ class TwitterApp:
                     last_height = final_height
             else:
                 last_height = new_height
+
+    def obtenFollowX(self):
+        spanFollowers = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Seguidores')]")))
+        spanFollowings = WebDriverWait(self.driver, 20).until(EC.presence_of_element_located((By.XPATH, "//span[contains(text(), 'Siguiendo')]")))
+        
+        # Subir al <a> contenedor y bajar al span del número
+        enlace = spanFollowers.find_element(By.XPATH, "./ancestor::a")
+        followers = enlace.find_element(By.XPATH, ".//span/span").text
+
+        enlace = spanFollowings.find_element(By.XPATH, "./ancestor::a")
+        followings = enlace.find_element(By.XPATH, ".//span/span").text
+        
+        return followers, followings
