@@ -36,6 +36,7 @@ class TwitterApp:
         print("==================================================")
 
 
+    '''ORIG
     def full_scroll(self, pausa=2):
         ##Esta función fuerza el scroll vertical para asegurar la carga de todos los elementos (vídeos, colecciones, etc)
         # Obtener altura inicial
@@ -58,6 +59,39 @@ class TwitterApp:
                     sleep(SCROLL_PAUSE_TIME)
                 
                 # Una última comprobación
+                final_height = self.driver.execute_script("return document.body.scrollHeight")
+                if final_height == last_height:
+                    print("✅ Scroll final confirmado.")
+                    break
+                else:
+                    print("🔁 Scroll reactivado, continuando...")
+                    last_height = final_height
+            else:
+                last_height = new_height
+        '''
+
+    def full_scroll(self, pausa=2, max_scrolls=None):
+        last_height = self.driver.execute_script("return document.body.scrollHeight")
+        scrolls = 0
+
+        while True:
+            self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            sleep(SCROLL_PAUSE_TIME)
+            scrolls += 1
+
+            # Modo depuración: salir tras N scrolls
+            if max_scrolls and scrolls >= max_scrolls:
+                print(f"🛑 Depuración: detenido tras {scrolls} scrolls")
+                break
+
+            new_height = self.driver.execute_script("return document.body.scrollHeight")
+
+            if new_height == last_height:
+                print("📉 Fin del scroll detectado, forzando scrolls adicionales...")
+                for i in range(MAX_EXTRA_SCROLLS):
+                    self.driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+                    sleep(SCROLL_PAUSE_TIME)
+
                 final_height = self.driver.execute_script("return document.body.scrollHeight")
                 if final_height == last_height:
                     print("✅ Scroll final confirmado.")

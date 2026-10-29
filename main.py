@@ -28,7 +28,8 @@ def main():
             print("\nDebes introducir una opción correcta. Vuelve a probar.")
             continue
         if opcion == 1:
-            FollowerService(app).getFollowers()
+            #FollowerService(app).recoger_followers()
+            FollowerService(app).recoger_followers(max_scrolls=3)
 
         elif opcion == 2:
             #FollowingService(app).bannerFollowX()
